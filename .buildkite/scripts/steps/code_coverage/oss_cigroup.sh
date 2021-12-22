@@ -6,7 +6,7 @@ set -euo pipefail
 
 source .buildkite/scripts/steps/functional/common.sh
 
-node --max-old-space-size=14336 scripts/build_kibana_platform_plugins.js
+.buildkite/scripts/build_kibana_plugins.sh
 
 export CI_GROUP=${CI_GROUP:-$((BUILDKITE_PARALLEL_JOB+1))}
 export JOB=kibana-oss-ciGroup${CI_GROUP}
