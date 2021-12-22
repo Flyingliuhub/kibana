@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-source .buildkite/scripts/steps/functional/common.sh
+source .buildkite/scripts/steps/code_coverage/cigroup_common.sh
 
-node scripts/build_kibana_platform_plugins.js --no-cache
+# node scripts/build_kibana_platform_plugins.js --no-cache
 
 export CI_GROUP=${CI_GROUP:-$((BUILDKITE_PARALLEL_JOB+1))}
 export JOB=kibana-default-ciGroup${CI_GROUP}
