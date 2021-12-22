@@ -6,13 +6,13 @@ set -euo pipefail
 
 source .buildkite/scripts/steps/functional/common.sh
 
-export NODE_OPTIONS=--max_old_space_size=8192
-export CODE_COVERAGE=1
-
-node scripts/build_kibana_platform_plugins.js
+node --max-old-space-size=14336 scripts/build_kibana_platform_plugins.js
 
 export CI_GROUP=${CI_GROUP:-$((BUILDKITE_PARALLEL_JOB+1))}
 export JOB=kibana-oss-ciGroup${CI_GROUP}
+
+export NODE_OPTIONS=--max_old_space_size=8192
+export CODE_COVERAGE=1
 
 echo "--- OSS CI Group $CI_GROUP"
 echo " -> Running Functional tests with code coverage"
