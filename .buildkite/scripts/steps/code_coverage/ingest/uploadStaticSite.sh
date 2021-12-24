@@ -9,6 +9,11 @@ for x in 'src/dev/code_coverage/www/index.html' 'src/dev/code_coverage/www/404.h
     gsutil -m cp -r -a public-read -z js,css,html ${x} '${uploadPrefix}'
 done
 
-for x in 'target/kibana-coverage/functional-combined' 'target/kibana-coverage/jest-combined'; do
-    gsutil -m cp -r -a public-read -z js,css,html ${x} '${uploadPrefixWithTimeStamp}'
-done
+gsutil -m cp -r -a public-read -z js,css,html ${x} '${uploadPrefixWithTimeStamp}'
+
+# for x in 'target/kibana-coverage/functional-combined' 'target/kibana-coverage/jest-combined'; do
+#     gsutil -m cp -r -a public-read -z js,css,html ${x} '${uploadPrefixWithTimeStamp}'
+# done
+echo "uploadPrefixWithTimeStamp=${uploadPrefixWithTimeStamp}"
+gsutil -m cp -r -a public-read -z js,css,html target/kibana-coverage/functional-combined ${uploadPrefixWithTimeStamp}
+gsutil -m cp -r -a public-read -z js,css,html target/kibana-coverage/jest-combined ${uploadPrefixWithTimeStamp}
