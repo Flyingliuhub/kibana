@@ -494,7 +494,8 @@ export interface DocLinksStart {
         readonly settings: string;
         readonly elasticStackGetStarted: string;
         readonly upgrade: {
-            readonly upgradingElasticStack: string;
+            readonly upgradingStackOnPrem: string;
+            readonly upgradingStackOnCloud: string;
         };
         readonly apm: {
             readonly kibanaSettings: string;
@@ -630,6 +631,7 @@ export interface DocLinksStart {
             readonly significant_terms: string;
             readonly terms: string;
             readonly terms_doc_count_error: string;
+            readonly rare_terms: string;
             readonly avg: string;
             readonly avg_bucket: string;
             readonly max_bucket: string;
@@ -676,7 +678,11 @@ export interface DocLinksStart {
             readonly runtimeFields: string;
         };
         readonly addData: string;
-        readonly kibana: string;
+        readonly kibana: {
+            readonly guide: string;
+            readonly autocompleteSuggestions: string;
+            readonly xpackSecurity: string;
+        };
         readonly upgradeAssistant: {
             readonly overview: string;
             readonly batchReindex: string;
@@ -701,6 +707,7 @@ export interface DocLinksStart {
         readonly query: {
             readonly eql: string;
             readonly kueryQuerySyntax: string;
+            readonly luceneQuery: string;
             readonly luceneQuerySyntax: string;
             readonly percolate: string;
             readonly queryDsl: string;
@@ -729,6 +736,7 @@ export interface DocLinksStart {
             cronExpressions: string;
             executeWatchActionModes: string;
             indexExists: string;
+            multiSearch: string;
             openIndex: string;
             putComponentTemplate: string;
             painlessExecute: string;
@@ -737,8 +745,10 @@ export interface DocLinksStart {
             putSnapshotLifecyclePolicy: string;
             putIndexTemplateV1: string;
             putWatch: string;
+            searchPreference: string;
             simulatePipeline: string;
             timeUnits: string;
+            unfreezeIndex: string;
             updateTransform: string;
         }>;
         readonly observability: Readonly<{
@@ -1499,7 +1509,7 @@ export interface SavedObjectsFindOptions {
     // (undocumented)
     sortField?: string;
     // (undocumented)
-    sortOrder?: estypes.SearchSortOrder;
+    sortOrder?: estypes.SortOrder;
     // (undocumented)
     type: string | string[];
     typeToNamespacesMap?: Map<string, string[] | undefined>;

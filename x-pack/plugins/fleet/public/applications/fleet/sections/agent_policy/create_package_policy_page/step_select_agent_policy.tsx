@@ -28,7 +28,7 @@ import { isPackageLimited, doesAgentPolicyAlreadyIncludePackage } from '../../..
 import {
   useGetAgentPolicies,
   sendGetOneAgentPolicy,
-  useCapabilities,
+  useAuthz,
   useFleetStatus,
 } from '../../../hooks';
 import { CreateAgentPolicyFlyout } from '../list_page/components';
@@ -45,12 +45,14 @@ export const StepSelectAgentPolicy: React.FunctionComponent<{
   agentPolicy: AgentPolicy | undefined;
   updateAgentPolicy: (agentPolicy: AgentPolicy | undefined) => void;
   setHasAgentPolicyError: (hasError: boolean) => void;
+  onNewAgentPolicyCreate: () => void;
 }> = ({
   packageInfo,
   agentPolicy,
   updateAgentPolicy,
   defaultAgentPolicyId,
   setHasAgentPolicyError,
+  onNewAgentPolicyCreate,
 }) => {
   const { isReady: isFleetReady } = useFleetStatus();
 
@@ -61,7 +63,7 @@ export const StepSelectAgentPolicy: React.FunctionComponent<{
   const [selectedAgentPolicyError, setSelectedAgentPolicyError] = useState<Error>();
 
   // Create new agent policy flyout state
-  const hasWriteCapabilites = useCapabilities().write;
+  const hasFleetAllPrivileges = useAuthz().fleet.all;
   const [isCreateAgentPolicyFlyoutOpen, setIsCreateAgentPolicyFlyoutOpen] =
     useState<boolean>(false);
 
@@ -203,6 +205,7 @@ export const StepSelectAgentPolicy: React.FunctionComponent<{
             onClose={(newAgentPolicy?: AgentPolicy) => {
               setIsCreateAgentPolicyFlyoutOpen(false);
               if (newAgentPolicy) {
+                onNewAgentPolicyCreate();
                 refreshAgentPolicies();
                 setSelectedPolicyId(newAgentPolicy.id);
               }
@@ -248,7 +251,7 @@ export const StepSelectAgentPolicy: React.FunctionComponent<{
                   <EuiFlexItem grow={false}>
                     <div>
                       <EuiLink
-                        disabled={!hasWriteCapabilites}
+                        disabled={!hasFleetAllPrivileges}
                         onClick={() => setIsCreateAgentPolicyFlyoutOpen(true)}
                       >
                         <FormattedMessage
