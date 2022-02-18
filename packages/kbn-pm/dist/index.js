@@ -8987,13 +8987,6 @@ const BootstrapCommand = {
     }, {
       prefix: '[vscode]',
       debug: false
-    });
-    await Object(_utils_child_process__WEBPACK_IMPORTED_MODULE_3__["spawnStreaming"])(process.execPath, ['scripts/build_ts_refs', '--ignore-type-failures'], {
-      cwd: kbn.getAbsolute(),
-      env: process.env
-    }, {
-      prefix: '[ts refs]',
-      debug: false
     }); // send timings
 
     await reporter.timings({
@@ -9049,7 +9042,9 @@ var _ci_stats_config = __webpack_require__(218);
  */
 // @ts-expect-error not "public", but necessary to prevent Jest shimming from breaking things
 const BASE_URL = 'https://ci-stats.kibana.dev';
+/** A ci-stats metric record */
 
+/** Object that helps report data to the ci-stats service */
 class CiStatsReporter {
   /**
    * Create a CiStatsReporter by inspecting the ENV for the necessary config
@@ -9146,7 +9141,7 @@ class CiStatsReporter {
       totalMem: _os.default.totalmem()
     };
     this.log.debug('CIStatsReporter committerHash: %s', defaultMeta.committerHash);
-    return await this.req({
+    return !!(await this.req({
       auth: !!buildId,
       path: '/v1/timings',
       body: {
@@ -9156,7 +9151,7 @@ class CiStatsReporter {
         timings
       },
       bodyDesc: timings.length === 1 ? `${timings.length} timing` : `${timings.length} timings`
-    });
+    }));
   }
   /**
    * Report metrics data to the ci-stats service. If running outside of CI this method
@@ -9174,10 +9169,10 @@ class CiStatsReporter {
     const buildId = (_this$config4 = this.config) === null || _this$config4 === void 0 ? void 0 : _this$config4.buildId;
 
     if (!buildId) {
-      throw new Error(`CiStatsReporter can't be authorized without a buildId`);
+      throw new Error(`metrics can't be reported without a buildId`);
     }
 
-    return await this.req({
+    return !!(await this.req({
       auth: true,
       path: '/v1/metrics',
       body: {
@@ -9190,6 +9185,35 @@ class CiStatsReporter {
         id,
         value
       }) => `[${group}/${id}=${value}]`).join(' ')}`
+    }));
+  }
+  /**
+   * Send test reports to ci-stats
+   */
+
+
+  async reportTests({
+    group,
+    testRuns
+  }) {
+    var _this$config5, _this$config6, _this$config7;
+
+    if (!((_this$config5 = this.config) !== null && _this$config5 !== void 0 && _this$config5.buildId) || !((_this$config6 = this.config) !== null && _this$config6 !== void 0 && _this$config6.apiToken)) {
+      throw new Error('unable to report tests unless buildId is configured and auth config available');
+    }
+
+    return await this.req({
+      auth: true,
+      path: '/v1/test_group',
+      query: {
+        buildId: (_this$config7 = this.config) === null || _this$config7 === void 0 ? void 0 : _this$config7.buildId
+      },
+      bodyDesc: `[${group.name}/${group.type}] test groups with ${testRuns.length} tests`,
+      body: [JSON.stringify({
+        group
+      }), ...testRuns.map(testRun => JSON.stringify({
+        testRun
+      }))].join('\n')
     });
   }
   /**
@@ -9239,7 +9263,8 @@ class CiStatsReporter {
     auth,
     body,
     bodyDesc,
-    path
+    path,
+    query
   }) {
     let attempt = 0;
     const maxAttempts = 5;
@@ -9250,22 +9275,23 @@ class CiStatsReporter {
         Authorization: `token ${this.config.apiToken}`
       };
     } else if (auth) {
-      throw new Error('this.req() shouldnt be called with auth=true if this.config is defined');
+      throw new Error('this.req() shouldnt be called with auth=true if this.config is not defined');
     }
 
     while (true) {
       attempt += 1;
 
       try {
-        await _axios.default.request({
+        const resp = await _axios.default.request({
           method: 'POST',
           url: path,
           baseURL: BASE_URL,
           headers,
           data: body,
+          params: query,
           adapter: _http.default
         });
-        return true;
+        return resp.data;
       } catch (error) {
         var _error$response;
 
@@ -51477,7 +51503,7 @@ async function sortPackageJson(kbn) {
   await fs_promises__WEBPACK_IMPORTED_MODULE_0___default.a.writeFile(packageJsonPath, JSON.stringify(sort_package_json__WEBPACK_IMPORTED_MODULE_1___default()(JSON.parse(packageJson), {
     // top level keys in the order they were written when this was implemented
     sortOrder: ['name', 'description', 'keywords', 'private', 'version', 'branch', 'types', 'tsdocMetadata', 'build', 'homepage', 'bugs', 'kibana', 'author', 'scripts', 'repository', 'engines', 'resolutions']
-  }), null, 2));
+  }), null, 2) + '\n');
 }
 
 /***/ }),
