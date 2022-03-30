@@ -14,6 +14,8 @@ export {
   maxSuggestions,
   enableComparisonByDefault,
   enableInfrastructureView,
+  defaultApmServiceEnvironment,
+  apmServiceInventoryOptimizedSorting,
 } from './ui_settings_keys';
 
 export const casesFeatureId = 'observabilityCases';

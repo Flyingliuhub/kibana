@@ -8,6 +8,7 @@
 export {
   AGG_TYPE,
   COLOR_MAP_TYPE,
+  DECIMAL_DEGREES_PRECISION,
   ES_GEO_FIELD_TYPE,
   FIELD_ORIGIN,
   INITIAL_LOCATION,
@@ -22,6 +23,7 @@ export {
   MAX_ZOOM,
   MIN_ZOOM,
   VECTOR_SHAPE_TYPE,
+  VECTOR_STYLES,
 } from './constants';
 
 export type { FieldFormatter } from './constants';
